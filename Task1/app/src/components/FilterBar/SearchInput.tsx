@@ -45,7 +45,7 @@ export function SearchInput({ value, onChange }: SearchInputProps) {
           onChange={(e) => setLocal(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className={`w-full rounded-[2px] border border-[rgb(55,55,55)] bg-[#ebebed] py-2 pr-4 text-sm text-[rgb(55,55,55)] transition-all duration-200 placeholder:text-[rgb(55,55,55)] hover:bg-gray-200 focus:border-[rgb(55,55,55)] focus:bg-gray-50 focus:outline-none ${focused ? "pl-4" : "pl-10"}`}
+          className={`w-full rounded-[2px] border border-[rgb(55,55,55)] bg-[#ebebed] py-2 pr-4 text-sm text-[rgb(55,55,55)] transition-all duration-200 placeholder:text-[rgb(55,55,55)] hover:bg-gray-200 focus:border-2 focus:border-[rgb(55,55,55)] focus:bg-gray-50 focus:outline-none ${focused ? "pl-4" : "pl-10"}`}
         />
       </div>
     </div>

@@ -27,7 +27,7 @@ export function DropdownFilter({ value, options, onChange }: DropdownFilterProps
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between rounded-[2px] border border-[rgb(55,55,55)] bg-[#ebebed] px-3 py-2 text-sm font-medium text-[rgb(55,55,55)] transition hover:bg-gray-200 focus:border-[rgb(55,55,55)] focus:outline-none"
+        className="flex w-full items-center justify-between rounded-[2px] border border-[rgb(55,55,55)] bg-[#ebebed] px-3 py-2 text-sm font-medium text-[rgb(55,55,55)] transition hover:bg-gray-200 focus:border-2 focus:border-[rgb(55,55,55)] focus:outline-none"
       >
         <span>{selectedLabel}</span>
         <svg
@@ -49,8 +49,8 @@ export function DropdownFilter({ value, options, onChange }: DropdownFilterProps
                 onChange(opt.value);
                 setOpen(false);
               }}
-              className={`cursor-pointer bg-[#ebebed] px-3 py-2 text-sm text-[rgb(55,55,55)] hover:bg-white ${
-                opt.value === value ? "font-medium" : ""
+              className={`cursor-pointer bg-[#ebebed] px-3 py-2 text-sm text-[rgb(55,55,55)] ${
+                opt.value === value ? "font-medium" : "hover:bg-white"
               }`}
             >
               {opt.label}
