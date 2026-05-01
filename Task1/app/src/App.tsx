@@ -20,7 +20,7 @@ function App() {
       </p>
 
       {/* Filter Bar */}
-      <section className="mb-8 rounded-2xl border border-gray-200 bg-gray-50/50 px-5 py-4">
+      <section className="mb-8 rounded-2xl border border-gray-200 bg-gray-50/50 px-5 py-4 shadow-sm">
         <FilterBar />
       </section>
 

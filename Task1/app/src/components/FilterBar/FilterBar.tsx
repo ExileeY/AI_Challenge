@@ -30,21 +30,18 @@ export function FilterBar() {
     useLeaderboardStore();
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-4">
       <DropdownFilter
-        label="Year"
         value={filters.year?.toString() ?? ""}
         options={yearOptions}
         onChange={(v) => setYear(v ? Number(v) : null)}
       />
       <DropdownFilter
-        label="Quarter"
         value={filters.quarter ?? ""}
         options={quarterOptions}
         onChange={(v) => setQuarter((v || null) as Quarter | null)}
       />
       <DropdownFilter
-        label="Category"
         value={filters.category ?? ""}
         options={categoryOptions}
         onChange={(v) => setCategory((v || null) as Category | null)}
