@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #6366f1;
+  --color-primary: #3b82f6;
   --color-gold: #f59e0b;
   --color-silver: #9ca3af;
-  --color-bronze: #d97706;
+  --color-bronze: #cd7f32;
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-white text-gray-900 antialiased;
   font-family: "Inter", system-ui, -apple-system, sans-serif;
 }

@@ -4,6 +4,15 @@ interface ActivityDetailProps {
   member: Member;
 }
 
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).replace(/ /g, "-");
+}
+
 export function ActivityDetail({ member }: ActivityDetailProps) {
   const recentActivities = member.activities.slice(0, 10);
 
@@ -16,36 +25,32 @@ export function ActivityDetail({ member }: ActivityDetailProps) {
   }
 
   return (
-    <div className="border-t border-gray-100 bg-gray-50/50 px-14 py-4">
-      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+    <div className="border-t border-gray-100 bg-gray-50/50 px-6 py-5">
+      <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
         Recent Activity
       </h4>
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left text-xs text-gray-400">
-            <th className="pb-2 font-medium">Activity</th>
-            <th className="pb-2 font-medium">Category</th>
-            <th className="pb-2 font-medium">Date</th>
-            <th className="pb-2 text-right font-medium">Points</th>
+          <tr className="text-left text-xs uppercase tracking-wider text-gray-400">
+            <th className="pb-3 font-semibold">Activity</th>
+            <th className="pb-3 font-semibold">Category</th>
+            <th className="pb-3 font-semibold">Date</th>
+            <th className="pb-3 text-right font-semibold">Points</th>
           </tr>
         </thead>
         <tbody>
           {recentActivities.map((activity) => (
             <tr key={activity.id} className="border-t border-gray-100">
-              <td className="py-2 text-gray-700">{activity.name}</td>
-              <td className="py-2">
-                <span className="rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              <td className="py-3 text-gray-700">{activity.name}</td>
+              <td className="py-3">
+                <span className="rounded-full bg-gray-200/80 px-3 py-1 text-xs font-medium text-gray-600">
                   {activity.category}
                 </span>
               </td>
-              <td className="py-2 text-gray-500">
-                {new Date(activity.date).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+              <td className="py-3 text-gray-500">
+                {formatDate(activity.date)}
               </td>
-              <td className="py-2 text-right font-medium text-indigo-600">
+              <td className="py-3 text-right font-semibold text-blue-500">
                 +{activity.points}
               </td>
             </tr>

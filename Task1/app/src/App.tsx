@@ -14,18 +14,19 @@ function App() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="mb-8 text-2xl font-bold text-gray-900">
-        Company Leaderboard
-      </h1>
+      <h1 className="mb-1 text-3xl font-bold text-gray-900">Leaderboard</h1>
+      <p className="mb-6 text-sm text-gray-500">
+        Top performers based on contributions and activity
+      </p>
 
       {/* Filter Bar */}
-      <section className="mb-8">
+      <section className="mb-8 rounded-2xl border border-gray-200 bg-gray-50/50 px-5 py-4">
         <FilterBar />
       </section>
 
       {/* Podium - Top 3 */}
       {top3.length >= 3 && (
-        <section className="mb-8 rounded-xl bg-white p-6 shadow-sm border border-gray-200">
+        <section className="mb-8">
           <Podium members={top3} />
         </section>
       )}

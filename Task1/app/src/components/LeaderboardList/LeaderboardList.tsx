@@ -56,7 +56,7 @@ export function LeaderboardList({ members }: LeaderboardListProps) {
   // When a row is expanded, fall back to regular rendering (variable heights)
   if (hasExpanded) {
     return (
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         {members.map((member, index) => (
           <LeaderboardRow key={member.id} member={member} rank={index + 4} />
         ))}
@@ -65,7 +65,7 @@ export function LeaderboardList({ members }: LeaderboardListProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <List
         rowComponent={({ index, style }) => (
           <VirtualRow index={index} style={style} members={members} />

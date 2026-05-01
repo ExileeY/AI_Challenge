@@ -49,7 +49,7 @@ export function FilterBar() {
         options={categoryOptions}
         onChange={(v) => setCategory((v || null) as Category | null)}
       />
-      <div className="ml-auto w-64">
+      <div className="flex-1 min-w-[200px]">
         <SearchInput value={filters.search} onChange={setSearch} />
       </div>
     </div>
