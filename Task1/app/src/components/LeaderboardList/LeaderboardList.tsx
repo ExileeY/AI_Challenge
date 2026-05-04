@@ -1,34 +1,11 @@
-import { List } from "react-window";
 import type { Member } from "../../types";
-import { useLeaderboardStore } from "../../store/leaderboardStore";
 import { LeaderboardRow } from "./LeaderboardRow";
 
 interface LeaderboardListProps {
   members: Member[];
 }
 
-const ROW_HEIGHT = 64;
-
-function VirtualRow({
-  index,
-  style,
-  members,
-}: {
-  index: number;
-  style: React.CSSProperties;
-  members: Member[];
-}) {
-  return (
-    <div style={style}>
-      <LeaderboardRow member={members[index]} rank={index + 4} />
-    </div>
-  );
-}
-
 export function LeaderboardList({ members }: LeaderboardListProps) {
-  const expandedMemberId = useLeaderboardStore((s) => s.expandedMemberId);
-  const hasExpanded = expandedMemberId !== null;
-
   if (members.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -53,28 +30,11 @@ export function LeaderboardList({ members }: LeaderboardListProps) {
     );
   }
 
-  // When a row is expanded, fall back to regular rendering (variable heights)
-  if (hasExpanded) {
-    return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        {members.map((member, index) => (
-          <LeaderboardRow key={member.id} member={member} rank={index + 4} />
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <List
-        rowComponent={({ index, style }) => (
-          <VirtualRow index={index} style={style} members={members} />
-        )}
-        rowCount={members.length}
-        rowHeight={ROW_HEIGHT}
-        rowProps={{}}
-        style={{ height: Math.min(members.length * ROW_HEIGHT, 600) }}
-      />
+    <div className="flex flex-col gap-3">
+      {members.map((member, index) => (
+        <LeaderboardRow key={member.id} member={member} rank={index + 1} />
+      ))}
     </div>
   );
 }

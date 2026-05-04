@@ -10,7 +10,6 @@ function App() {
   const members = useFilteredMembers(filters);
 
   const top3 = members.slice(0, 3);
-  const rest = members.slice(3);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -32,9 +31,7 @@ function App() {
       )}
 
       {/* Leaderboard List */}
-      <section>
-        <LeaderboardList members={rest} />
-      </section>
+      <LeaderboardList members={members} />
     </div>
   );
 }
