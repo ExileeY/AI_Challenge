@@ -1,14 +1,10 @@
-# REPORT
+# Report
 
-## STEP 1 - Project initialization
+## General Approach
 
-### Prompt
+1. The development plan was generated using ChatGPT.
+2. The generated plan was then reviewed, refined, and implemented using Claude Opus 4.6.
 
-Let's start by building an empty React project (in scope of Task1 folder).
+## Test Data
 
-## STEP 2 - Analyse general endpoints & Mock general endpoints
-
-### Prompt
-
-TO ADD
-
+For development and testing purposes, mock data was used, defined in: `app/src/data/members.ts`
