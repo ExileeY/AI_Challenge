@@ -1,0 +1,1392 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3eb65693-df41-4deb-89ce-8c74346bcd3e",
+      "name": "Telegram Trigger",
+      "webhookId": "0719a3a3-937a-4a35-ba61-e8f2209b9b3c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ 'https://r.jina.ai/' + $json.message.text.replace(\"/learn\", \"\").trim() }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        656,
+        32
+      ],
+      "id": "7c3dc264-e062-4ce3-aa29-815fb4f3ff0f",
+      "name": "URL Processor",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "👋 Aight, welcome to the Learning Assistant, fool\\.\nSince yo lazy ass ain’t tryna read all that yourself, this bot gonna do the dirty work for you\\.\n\nGot a link?\nDrop the article, blog post, docs, tutorial — whatever nonsense you got\\.\n\nHere’s what happen next:\n1\\. The bot break it down into a clean summary\n2\\. Then hit you with a quiz to see if yo brain was even online\n\nNow quit standin’ around and paste the damn link\\.\n",
+        "additionalFields": {
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        -224
+      ],
+      "id": "6ac3092d-1a13-4124-90e2-54614cbebe68",
+      "name": "Welcome MSG",
+      "webhookId": "38858f4e-b7de-4e4d-ac0d-11b721aeb958",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "🛠 Aight, listen up\\.\n\n/start — wakes this whole thing up\\. Try not to get confused already\\.\n\n/learn — drop a URL and the bot gonna do the reading your lazy ass didn’t wanna do\\.\n• makes a summary\n• builds a quiz to see if anything entered your brain at all\n\n/help — shows this menu again\\. Yeah, you’ll probably need it\\.\n\nSupported stuff:\n• articles\n• blog posts\n• documentation\n• tutorials\n\nNow quit staring at the screen and send a link\\.",
+        "additionalFields": {
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        -96
+      ],
+      "id": "d00d8b94-83e9-4bd7-8c01-5e6439134772",
+      "name": "Help MSG",
+      "webhookId": "38858f4e-b7de-4e4d-ac0d-11b721aeb958",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3f75b7be-1bbb-4f76-a221-f114cbd81cce"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Start"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "409916cd-a5e8-453a-91e1-b74f66cd2067",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/help",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Help"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cde7cd45-2537-41b8-8df6-d584b4cb54fb",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "=^\\/learn https?:\\/\\/[^\\s]+$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Learn"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2ba8df6d-47c6-4b72-8c4a-5ac0f72ee891",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/quiz",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Quiz"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        -112
+      ],
+      "id": "019e284f-82e1-42fd-a77b-3043d3640888",
+      "name": "Commands"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message?.text }}",
+                    "rightValue": "/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "f1cda45f-b485-46b0-8c8c-9420c5525105"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Commad"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b0cc7d63-4edd-4718-8759-d6fbb6717543",
+                    "leftValue": "={{ $json.callback_query?.data }}",
+                    "rightValue": "quiz_",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Topic Selected"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b9883aa8-cb0e-45a8-926c-039607a3c2e5",
+                    "leftValue": "={{ $json.callback_query?.data }}",
+                    "rightValue": "=^[ABCD]$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Answered"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ad80bdec-b3ca-46bf-835a-408fda152268",
+      "name": "Modes"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8b8f50e7-71b8-4eb4-95b7-c447647770d7",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1072,
+        32
+      ],
+      "id": "c04636e8-8e8d-4c3f-b83d-130cdfb6112b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.errorMessage }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        -64
+      ],
+      "id": "f63586d1-71de-4de5-a257-111d90d96455",
+      "name": "Error Handler",
+      "webhookId": "f09b56f8-8578-4b1e-aa4f-cac4faeb3bc1",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "⏳ Man, this article long as hell\\.\nI’m breaking it down and building the summary now\\.\nWait like 10\\-15 seconds and quit rushin’ me\\.",
+        "additionalFields": {
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        128
+      ],
+      "id": "10473f70-d4a6-4201-b8f4-cc70e40f5ec1",
+      "name": "Send a text message",
+      "webhookId": "54452308-4425-46bc-9d65-6aef8bd468ef",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are an expert educator talkin’ exactly like CJ from GTA San Andreas after a long terrible day. You explain articles and concepts, but you sound annoyed, tired, irritated, and lowkey aggressive the whole time.\n\nYour speech MUST feel like:\n- street-level\n- rough\n- natural\n- simple\n- impatient\n- hood-style\n- emotionally done with everybody\n\nYou are NOT:\n- a scientist\n- a professor\n- a tech bro\n- a Reddit comedian\n- a corporate assistant\n\nDo NOT use:\n- fancy vocabulary\n- intellectual sarcasm\n- analytical jokes\n- “clever” humor\n- long complicated sentences\n\nInstead:\n- talk simple\n- sound irritated\n- use short reactions\n- sound like somebody explainin’ stuff near the block at night\n- make it feel like GTA dialogue\n\nYour energy:\n- “Man, this some bullshit.”\n- “Aight, listen up.”\n- “These fools really thought this was a good idea.”\n- “Whole thing broke. Big surprise.”\n- “Now I gotta explain this mess. Damn.”\n- “Boy ain’t no way.”\n- “Man, what is wrong with these people?”\n\nBehavior rules:\n- Roast dumb decisions.\n- Roast overcomplicated solutions.\n- Roast management when deserved.\n- Occasionally throw tiny passive-aggressive jokes at the reader.\n- Sound like explaining obvious things physically hurts you.\n- Sometimes start sentences with stuff like:\n  - “Aight”\n  - “Man”\n  - “Nah”\n  - “Look”\n  - “See”\n  - “Bruh”\n\nVERY IMPORTANT:\n- Keep the slang NATURAL.\n- Do NOT turn into parody gibberish.\n- Do NOT overdo grammar mistakes.\n- Keep summaries understandable and educational.\n- The summary still needs to teach the user something useful.\n\nForbidden:\n- hate speech\n- slurs\n- threats\n- explicit harassment\n- encouragement of violence\n- discriminatory language\n\nGiven an article, produce a summary formatted EXACTLY as follows using Telegram Markdown:\n\n📚 *Title*: [inferred article title]\n\n🎯 *Key Concepts*:\n- [concept 1 in 5-10 words]\n- [concept 2 in 5-10 words]\n- [concept 3 in 5-10 words]\n\n📝 *Summary*:\n[3-4 short paragraphs explaining the article in simple street-style language with irritated CJ-like commentary naturally mixed in. No bullet points here.]\n\n💡 *Takeaways*:\n1. [actionable insight]\n2. [actionable insight]\n3. [actionable insight]\n\nStyle examples:\n- “Aight so boom, whole app crashed ‘cause nobody checked nothin’. Real smart.”\n- “Man spent two years buildin’ extra problems for free.”\n- “These dudes ignored every warning sign possible. Impressive.”\n- “Bruh this codebase sound haunted.”\n- “Nah ‘cause who approved this?”\n- “Whole team actin’ shocked after deployin’ on Friday. Man come on.”\n\nRules:\n- Stay under 3500 characters total\n- Use *asterisks* for bold, not **double asterisks**\n- Do not use headers like # or ##\n- Do not include the article URL\n- Keep language simple and street-style\n- Keep the tone cold, irritated, and dismissive\n- Keep summaries educational and readable\n- Never break the formatting structure"
+            },
+            {
+              "content": "=={{ $('Prepare Content').first().json.content }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1472,
+        128
+      ],
+      "id": "fe2ef587-6ffb-41c5-9dc0-321402b769b9",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "VGqfVaQURDY15AV7",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Grab the cleaned content from Jina Reader\nconst rawContent = $input.first().json.data \n  || $input.first().json.body \n  || '';\n\n// Get user context from the original trigger\nconst triggerData = $('Telegram Trigger').first().json;\nconst chatId = triggerData.message.chat.id;\nconst userId = triggerData.message.from.id;\nconst fullMessage = triggerData.message.text;\n\n// Extract the URL from \"/learn URL\" pattern\nconst url = fullMessage.replace('/learn', '').trim();\n\n// Convert to string if needed\nlet content = typeof rawContent === 'string' \n  ? rawContent \n  : JSON.stringify(rawContent);\n\n// Remove excessive whitespace\ncontent = content.replace(/\\n{3,}/g, '\\n\\n').trim();\n\n// Check if extraction actually worked\nif (content.length < 200) {\n  return [{\n    json: {\n      chatId,\n      userId,\n      url,\n      error: true,\n      errorMessage: '❌ I could not extract meaningful content from that URL. The page might be behind a paywall, require JavaScript, or be empty.'\n    }\n  }];\n}\n\n// Cap length to keep LLM costs reasonable (~3000 tokens of input)\nconst MAX_LENGTH = 12000;\nif (content.length > MAX_LENGTH) {\n  content = content.substring(0, MAX_LENGTH) + '\\n\\n[Content truncated for length]';\n}\n\nreturn [{\n  json: {\n    chatId,\n    userId,\n    url,\n    content,\n    contentLength: content.length,\n    error: false\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        32
+      ],
+      "id": "ca4da2ef-ca18-41af-aaa3-a9a37c825f13",
+      "name": "Prepare Content"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.summary }}",
+        "additionalFields": {
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1936,
+        288
+      ],
+      "id": "0053aea5-7200-4c19-b9d2-01f4d198ee96",
+      "name": "Send Summary",
+      "webhookId": "c781ccbb-521c-4ce2-8d1c-0f10d2c6be72",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You generate multiple-choice quiz questions talkin’ exactly like a tired hood dude with strong CJ-from-GTA-SA energy.\n\nEvery single question, option, and explanation MUST sound like it’s spoken by the same annoyed street guy explainin’ stuff while already fed up with everybody.\n\nYour vibe:\n- cold\n- irritated\n- passive-aggressive\n- dismissive\n- low patience\n- hood-style speech\n- sounds like GTA dialogue\n\nIMPORTANT:\nThe ENTIRE quiz must sound street-style:\n- questions\n- answer options\n- explanations\n\nDo NOT suddenly become formal or intelligent halfway through.\n\nYou are NOT:\n- a professor\n- a scientist\n- a corporate trainer\n- a Reddit nerd\n- a motivational teacher\n\nDo NOT use:\n- fancy vocabulary\n- analytical language\n- “clever” sarcasm\n- corporate wording\n- long academic explanations\n\nInstead:\n- use simple words\n- use natural hood-style phrasing\n- use short irritated remarks\n- sound like somebody from the block testin’ if people actually listened\n\nYour speech should naturally include words like:\n- “Aight”\n- “Man”\n- “Nah”\n- “Bruh”\n- “Look”\n- “See”\n- “Damn”\n\nBut:\n- keep it readable\n- keep it natural\n- don’t turn it into parody gibberish\n- don’t overdo grammar mistakes\n\nTone examples:\n- “Aight, why this whole thing crash in the first place?”\n- “Bruh, what was these dudes actually tryin’ to fix?”\n- “Man, which option was the obvious problem here?”\n- “Nah ‘cause they literally explained this already.”\n- “Whole team ignored the warnings. Again.”\n\nBehavior rules:\n- Questions MUST still test understanding.\n- Wrong answers should sound believable.\n- Explanations should sound irritated and dismissive.\n- Difficulty should scale naturally:\n  - Question 1 = easy\n  - Question 2 = medium\n  - Question 3 = harder\n- Occasionally roast dumb decisions from the article.\n- Make it feel like a GTA side character makin’ a quiz.\n\nVERY IMPORTANT:\n- Output MUST remain PERFECT valid JSON.\n- Personality exists INSIDE strings only.\n- NEVER break JSON formatting.\n- NEVER add text outside JSON.\n- NEVER add markdown.\n\nForbidden:\n- hate speech\n- slurs\n- threats\n- discriminatory language\n- encouragement of violence\n- explicit harassment\n\nReturn ONLY a valid JSON object matching this EXACT schema:\n\n{\n  \"questions\": [\n    {\n      \"question\": \"Aight, what actually caused the system to break?\",\n      \"options\": [\n        \"A) Man, they skipped all the testing\",\n        \"B) Bruh, the servers was too expensive\",\n        \"C) Nah, users forgot they passwords\",\n        \"D) Look, somebody unplugged the internet\"\n      ],\n      \"correct\": \"A\",\n      \"explanation\": \"Aight so yeah, they ain’t test nothin’. Whole thing folded exactly how you’d expect.\"\n    }\n  ]\n}\n\nRules:\n- Exactly 3 questions\n- Exactly 4 options per question\n- Options MUST start with:\n  - \"A) \"\n  - \"B) \"\n  - \"C) \"\n  - \"D) \"\n- The \"correct\" field MUST contain ONLY:\n  - \"A\"\n  - \"B\"\n  - \"C\"\n  - \"D\"\n- Questions must test understanding, not trivia\n- One easy question\n- One medium question\n- One harder question\n- Entire output must sound hood-style\n- No markdown\n- No preamble\n- No trailing text\n- ONLY the JSON object"
+            },
+            {
+              "content": "=={{ $('Prepare Content').first().json.content }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        2096,
+        128
+      ],
+      "id": "b7d8f8ac-e8b8-4947-9953-3d7139488693",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "VGqfVaQURDY15AV7",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const chatId = $('Prepare Content').first().json.chatId;\n\n// Get the summary from the LLM - correct path based on your screenshot\nconst rawSummary = $input.first().json.content?.[0]?.text \n  || $input.first().json.output?.[0]?.content?.[0]?.text\n  || '';\n\nif (!rawSummary) {\n  return [{\n    json: {\n      chatId,\n      summary: '❌ Failed to generate summary. Please try again.',\n      error: true\n    }\n  }];\n}\n\n// Function to escape markdown for Telegram MarkdownV2\nfunction escapeForMarkdownV2(text) {\n  // Step 1: Store bold sections with placeholders\n  const boldSections = [];\n  let textWithPlaceholders = text.replace(/\\*([^*]+)\\*/g, (match, content) => {\n    boldSections.push(content);\n    return `§BOLD${boldSections.length - 1}§`;\n  });\n  \n  // Step 2: Escape all special characters for MarkdownV2\n  // These characters must be escaped: _ * [ ] ( ) ~ ` > # + - = | { } . !\n  const escapeChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];\n  \n  escapeChars.forEach(char => {\n    const regex = new RegExp('\\\\' + char, 'g');\n    textWithPlaceholders = textWithPlaceholders.replace(regex, '\\\\' + char);\n  });\n  \n  // Step 3: Restore bold formatting with escaped content\n  boldSections.forEach((content, index) => {\n    // Escape the content inside bold tags too\n    let escapedContent = content;\n    escapeChars.forEach(char => {\n      const regex = new RegExp('\\\\' + char, 'g');\n      escapedContent = escapedContent.replace(regex, '\\\\' + char);\n    });\n    \n    textWithPlaceholders = textWithPlaceholders.replace(\n      `§BOLD${index}§`,\n      `*${escapedContent}*`\n    );\n  });\n  \n  return textWithPlaceholders;\n}\n\nconst escapedSummary = escapeForMarkdownV2(rawSummary);\n\nreturn [{\n  json: {\n    chatId,\n    summary: escapedSummary,\n    rawSummary: rawSummary // Keep for debugging\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        288
+      ],
+      "id": "da3204b0-8eb3-4ca1-b895-6dc98e781749",
+      "name": "Format Summary"
+    },
+    {
+      "parameters": {
+        "jsCode": "const chatId = $('Prepare Content').first().json.chatId;\nconst userId = $('Prepare Content').first().json.userId;\nconst url = $('Prepare Content').first().json.url;\nconst content = $('Prepare Content').first().json.content;\n\n// Get the LLM's JSON output - try multiple possible paths\nconst rawOutput = $input.first().json.content?.[0]?.text \n  || $input.first().json.output?.[0]?.content?.[0]?.text\n  || $input.first().json.message?.content\n  || $input.first().json.choices?.[0]?.message?.content\n  || $input.first().json.text\n  || '';\n\nlet quiz;\ntry {\n  // Remove markdown code fences if present\n  let cleaned = rawOutput.trim();\n  cleaned = cleaned.replace(/```json\\n?/g, '').replace(/```\\n?/g, '');\n  quiz = typeof cleaned === 'string' ? JSON.parse(cleaned) : cleaned;\n} catch (e) {\n  console.error('Quiz parse error:', e);\n  return [{\n    json: {\n      chatId,\n      error: true,\n      errorMessage: '❌ I had trouble building a quiz this time. Try another article!'\n    }\n  }];\n}\n\n// Validate structure\nif (!quiz.questions || !Array.isArray(quiz.questions) || quiz.questions.length === 0) {\n  return [{\n    json: {\n      chatId,\n      error: true,\n      errorMessage: '❌ Quiz generation returned an unexpected format. Try another article!'\n    }\n  }];\n}\n\n// Ensure we have at least 3 questions\nif (quiz.questions.length < 3) {\n  return [{\n    json: {\n      chatId,\n      error: true,\n      errorMessage: `❌ Could only generate ${quiz.questions.length} questions. Try a longer article!`\n    }\n  }];\n}\n\n// ===== THIS IS THE CRITICAL PART =====\n// Get static data storage\nconst staticData = $getWorkflowStaticData('global');\n\n// Extract title from the summary\nconst summaryText = $('Format Summary').first().json.summary || '';\nconst titleMatch = summaryText.match(/<b>Title<\\/b>:\\s*([^<\\n]+)/i) \n  || summaryText.match(/Title[*:\\s]+([^\\n]+)/i);\nlet topicTitle = titleMatch ? titleMatch[1].trim() : 'Untitled Topic';\n\n// Clean HTML tags\ntopicTitle = topicTitle.replace(/<[^>]+>/g, '').trim();\n\n// Limit title length\nif (topicTitle.length > 60) {\n  topicTitle = topicTitle.substring(0, 57) + '...';\n}\n\n// Initialize learned topics storage if it doesn't exist\nif (!staticData.learnedTopics) {\n  staticData.learnedTopics = {};\n  console.log('Initialized learnedTopics object');\n}\n\n// Initialize array for this user if it doesn't exist\nif (!staticData.learnedTopics[chatId]) {\n  staticData.learnedTopics[chatId] = [];\n  console.log('Initialized array for chatId:', chatId);\n}\n\n// Create a unique topic ID\nconst topicId = `topic_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\n\n// THIS IS WHERE THE TOPIC GETS SAVED\nstaticData.learnedTopics[chatId].unshift({\n  id: topicId,\n  title: topicTitle,\n  url: url,\n  content: content,\n  questions: quiz.questions.slice(0, 3),\n  learnedAt: Date.now()\n});\n\nconsole.log('✅ Topic saved! chatId:', chatId, 'topicTitle:', topicTitle);\nconsole.log('Total topics for this user:', staticData.learnedTopics[chatId].length);\n\n// Keep only last 10 topics\nif (staticData.learnedTopics[chatId].length > 10) {\n  staticData.learnedTopics[chatId] = staticData.learnedTopics[chatId].slice(0, 10);\n}\n\n// Store current quiz session (not used since quiz doesn't auto-start)\nstaticData[`quiz_${chatId}`] = {\n  userId,\n  url,\n  topicId,\n  topicTitle,\n  questions: quiz.questions.slice(0, 3),\n  currentIndex: 0,\n  score: 0,\n  startedAt: Date.now()\n};\n\nreturn [{\n  json: {\n    chatId,\n    error: false,\n    topicTitle,\n    topicSaved: true\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2448,
+        128
+      ],
+      "id": "edc795bf-4306-4b0f-b29b-058693eb9cf0",
+      "name": "Store Quiz and Topic"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "79756380-7974-4464-abfe-0dba2b29a41b",
+              "leftValue": "=={{ $json.error }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2656,
+        128
+      ],
+      "id": "9e1bfdc1-15e5-44d6-bbee-383891b50aad",
+      "name": "Error Occurs"
+    },
+    {
+      "parameters": {
+        "chatId": "=={{ $json.chatId }}",
+        "text": "=={{ $json.errorMessage }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2864,
+        32
+      ],
+      "id": "12db6fc2-5b3a-4a0a-80d0-ede27347ca58",
+      "name": "Handle Error",
+      "webhookId": "19c453e0-976e-4cfb-80e7-d159c8d2fe17",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ '✅ <b>Aight, You Done.</b>\\n\\n📚 Topic saved: <b>' + $json.topicTitle + '</b>\\n\\nMan, now you can:\\n• Use <code>/quiz</code> if you tryna see whether you actually learned somethin’\\n• Use <code>/learn [URL]</code> to dump another article on me\\n\\nNah but fr, type <code>/quiz</code> when you ready.' }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2864,
+        224
+      ],
+      "id": "879bf75c-b677-4daa-b632-239f7d0ba5c4",
+      "name": "Send Learning Complete Message",
+      "webhookId": "6e185ef9-ba26-4060-970c-687291d1ba07",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const chatId = $input.first().json.message.chat.id;\nconst userId = $input.first().json.message.from.id;\n\n// Access the static data storage\nconst staticData = $getWorkflowStaticData('global');\n\n// Get learned topics for this specific user\nconst learnedTopics = staticData.learnedTopics?.[chatId] || [];\n\n// Check if user has any learned topics\nif (learnedTopics.length === 0) {\n  return [{\n    json: {\n      chatId,\n      userId,\n      noTopics: true,\n      message: '📚 <b>Ain’t Nothin’ Here Yet.</b>\\n\\nMan, you ain’t learned a single thing so far.\\n\\nUse <code>/learn [URL]</code> first so I got somethin’ to work with. Then you can do quizzes and all that.\\n\\n<b>Example:</b>\\n<code>/learn https://en.wikipedia.org/wiki/Photosynthesis</code>\\n\\nAight?'\n    }\n  }];\n}\n\n// User has topics - prepare them for display\n// Limit to 8 most recent (Telegram button limit per message)\nconst topicsForDisplay = learnedTopics.slice(0, 8);\n\nreturn [{\n  json: {\n    chatId,\n    userId,\n    noTopics: false,\n    topics: topicsForDisplay,\n    topicCount: learnedTopics.length\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        480
+      ],
+      "id": "3af4b822-e760-4faa-8792-4d3d9da7c9ee",
+      "name": "Fetch Learned Topics"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9149f848-a5ef-4d76-ba61-73bf7186e238",
+              "leftValue": "={{ $json.noTopics }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        880,
+        480
+      ],
+      "id": "181a0869-767b-4278-b3bd-869c177e1052",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1088,
+        432
+      ],
+      "id": "8aba3c73-d0ce-49b2-abba-76a2e2905074",
+      "name": "Send a text message1",
+      "webhookId": "dcde6982-1ffd-4279-afc2-1aa6f5c8971c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const chatId = $input.first().json.chatId;\nconst topics = $input.first().json.topics;\nconst topicCount = $input.first().json.topicCount;\n\n// Build the message text\nconst messageText = `🧠 <b>Select a Topic to Quiz On</b>\\n\\nChoose from your ${topicCount > 8 ? '8 most recent' : topicCount} learned topic${topicCount > 1 ? 's' : ''}:`;\n\n// Build inline keyboard buttons\n// Each button will have the topic title and a callback_data with the topic ID\nconst buttons = topics.map(topic => {\n  // Format the learned date for display\n  const learnedDate = new Date(topic.learnedAt);\n  const dateStr = learnedDate.toLocaleDateString('en-US', { \n    month: 'short', \n    day: 'numeric' \n  });\n  \n  return {\n    text: `📖 ${topic.title}`,\n    callback_data: `quiz_${topic.id}`  // This is what gets sent when user taps\n  };\n});\n\nreturn [{\n  json: {\n    chatId,\n    messageText,\n    buttons,\n    topicCount\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        576
+      ],
+      "id": "3688bb47-d356-47d0-98c8-7cec2d3c6c3e",
+      "name": "Build Topic Selection"
+    },
+    {
+      "parameters": {
+        "jsCode": "const chatId = $input.first().json.chatId;\nconst messageText = $input.first().json.messageText;\nconst buttons = $input.first().json.buttons;\n\n// Build inline keyboard - each button on its own row\nconst inlineKeyboard = buttons.map(button => [button]);\n\n// Return everything needed for the HTTP Request node\nreturn [{\n  json: {\n    chatId: chatId,\n    text: messageText,\n    parse_mode: 'HTML',\n    reply_markup: JSON.stringify({\n      inline_keyboard: inlineKeyboard\n    })\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        576
+      ],
+      "id": "c5c1de1e-0a83-454d-8d74-669d7faed877",
+      "name": "Prepare Telegram Payload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{$vars.TELEGRAM_BOT_TOKEN}}/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"chat_id\": $json.chatId,\n  \"text\": $json.text,\n  \"parse_mode\": $json.parse_mode,\n  \"reply_markup\": $json.reply_markup\n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1504,
+        576
+      ],
+      "id": "570d7827-37f2-4be5-83f7-8e3428e39ca3",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const callback = $input.first().json.callback_query;\nconst chatId = callback.message.chat.id;\nconst userId = callback.from.id;\nconst callbackQueryId = callback.id;\nconst callbackData = callback.data;\n\nconsole.log('🎯 Topic button tapped!');\nconsole.log('Callback data:', callbackData);\n\n// Extract topic ID (remove \"quiz_\" prefix)\nconst topicId = callbackData.replace('quiz_', '');\nconsole.log('Looking for topic ID:', topicId);\n\n// Get stored topics\nconst staticData = $getWorkflowStaticData('global');\nconst learnedTopics = staticData.learnedTopics?.[chatId] || [];\nconsole.log('Total topics stored:', learnedTopics.length);\n\n// Find the selected topic\nconst selectedTopic = learnedTopics.find(topic => topic.id === topicId);\n\nif (!selectedTopic) {\n  console.error('❌ Topic not found!');\n  console.error('Available topic IDs:', learnedTopics.map(t => t.id));\n  \n  return [{\n    json: {\n      chatId,\n      callbackQueryId,\n      error: true,\n      errorMessage: '❌ <b>Topic Not Found</b>\\n\\nThis topic is no longer available.'\n    }\n  }];\n}\n\nconsole.log('✅ Topic found:', selectedTopic.title);\nconsole.log('Questions available:', selectedTopic.questions.length);\n\n// Create quiz session\nstaticData[`quiz_${chatId}`] = {\n  userId,\n  topicId: selectedTopic.id,\n  topicTitle: selectedTopic.title,\n  questions: selectedTopic.questions,\n  currentIndex: 0,\n  score: 0,\n  startedAt: Date.now()\n};\n\nconsole.log('✅ Quiz session created for chat:', chatId);\n\n// Get first question\nconst firstQ = selectedTopic.questions[0];\n\nreturn [{\n  json: {\n    chatId,\n    callbackQueryId,\n    error: false,\n    topicTitle: selectedTopic.title,\n    questionNumber: 1,\n    totalQuestions: selectedTopic.questions.length,\n    question: firstQ.question,\n    options: firstQ.options\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        560
+      ],
+      "id": "75755618-d0ba-4dc2-8fc6-dfdeb861a293",
+      "name": "Load Selected Topic"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "744a74de-a61a-471a-b148-be71eb797bde",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        864
+      ],
+      "id": "28992daf-2a6d-496d-aeca-ff6f6d650196",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.errorMessage }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        704
+      ],
+      "id": "9a64b59a-5c08-46e8-abfc-5585014efc60",
+      "name": "Error Handler1",
+      "webhookId": "f09b56f8-8578-4b1e-aa4f-cac4faeb3bc1",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.callbackQueryId }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        1120
+      ],
+      "id": "8e5ed8c4-a070-4016-a5f6-9698e2ebf89a",
+      "name": "Answer Callback",
+      "webhookId": "2962df08-94c5-4dbd-8002-f8481f2ae713",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ '🧠 <b>Quiz: ' + $json.topicTitle + '</b>\\n\\n<b>Question 1 of ' + $json.totalQuestions + ':</b>\\n\\n' + $json.question + '\\n\\n' + $json.options.join('\\n') }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "A",
+                    "additionalFields": {
+                      "callback_data": "A"
+                    }
+                  },
+                  {
+                    "text": "B",
+                    "additionalFields": {
+                      "callback_data": "B"
+                    }
+                  },
+                  {
+                    "text": "C",
+                    "additionalFields": {
+                      "callback_data": "C"
+                    }
+                  },
+                  {
+                    "text": "D",
+                    "additionalFields": {
+                      "callback_data": "D"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        944
+      ],
+      "id": "0530b82e-5555-4ede-8efb-886d28821572",
+      "name": "Send First Question",
+      "webhookId": "e5e49dfb-0c07-4a33-b559-8f79653cdbec",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const callback = $input.first().json.callback_query;\nconst chatId = callback.message.chat.id;\nconst messageId = callback.message.message_id;\nconst userAnswer = callback.data;  // Will be \"A\", \"B\", \"C\", or \"D\"\nconst callbackQueryId = callback.id;\n\nconsole.log('════════════════════════════════');\nconsole.log('📝 Quiz Answer Received');\nconsole.log('User answer:', userAnswer);\nconsole.log('Chat ID:', chatId);\nconsole.log('════════════════════════════════');\n\n// Get the active quiz session\nconst staticData = $getWorkflowStaticData('global');\nconst quiz = staticData[`quiz_${chatId}`];\n\n// Check if there's an active quiz\nif (!quiz) {\n  console.error('❌ No active quiz found');\n  return [{\n    json: {\n      chatId,\n      callbackQueryId,\n      messageId,\n      noQuiz: true,\n      message: '❌ <b>No Active Quiz</b>\\n\\nNo quiz is currently running.\\n\\nUse <code>/quiz</code> to start a new quiz!',\n      isDone: true\n    }\n  }];\n}\n\nconsole.log('Current quiz:', quiz.topicTitle);\nconsole.log('Question:', quiz.currentIndex + 1, 'of', quiz.questions.length);\n\n// Get the current question\nconst currentQuestion = quiz.questions[quiz.currentIndex];\nconsole.log('Correct answer is:', currentQuestion.correct);\n\n// Check if the answer is correct\nconst isCorrect = userAnswer === currentQuestion.correct;\nconsole.log('User answered:', userAnswer, '→', isCorrect ? '✅ CORRECT' : '❌ WRONG');\n\n// Update score if correct\nif (isCorrect) {\n  quiz.score++;\n  console.log('Score updated:', quiz.score);\n}\n\n// Build feedback message\nconst feedback = isCorrect\n  ? `✅ <b>Correct!</b>\\n\\n<i>${currentQuestion.explanation}</i>`\n  : `❌ <b>Not quite.</b> The correct answer was <b>${currentQuestion.correct}</b>.\\n\\n<i>${currentQuestion.explanation}</i>`;\n\n// Move to next question\nquiz.currentIndex++;\nconsole.log('Moving to question index:', quiz.currentIndex);\n\n// Check if quiz is complete\nconst isDone = quiz.currentIndex >= quiz.questions.length;\nconsole.log('Quiz complete?', isDone);\n\nlet responseMessage;\nlet hasNextQuestion = false;\nlet nextQuestion = null;\n\nif (isDone) {\n  // Quiz is complete - calculate final results\n  const totalQuestions = quiz.questions.length;\n  const percentage = Math.round((quiz.score / totalQuestions) * 100);\n  \n  console.log('════════════════════════════════');\n  console.log('🏁 QUIZ COMPLETE');\n  console.log('Final Score:', quiz.score, '/', totalQuestions, '(', percentage, '%)');\n  console.log('════════════════════════════════');\n  \n  // Determine grade/emoji based on percentage\n  let grade = '';\n  let emoji = '';\n  if (percentage === 100) {\n    grade = '<b>Yeah, yeah. Look at you. Somehow got every answer right. Miracles happen, I guess.</b>';\n    emoji = '🏆';\n  } else if (percentage >= 67) {\n    grade = '<b>Yeah, you pulled it off. Didn’t expect much, but here we are.</b>';\n    emoji = '🎉';\n  } else if (percentage >= 33) {\n    grade = '<b>Aight, you tried. Coulda been worse, honestly.</b>';\n    emoji = '👍';\n  } else {\n    grade = '<b>Yeah, you still got work to do. Go run it back till somethin’ actually sticks.</b>';\n    emoji = '📚';\n  }\n  \n  responseMessage = `${feedback}\\n\\n━━━━━━━━━━━━━━━━━━\\n\\n${emoji} <b>Quiz Complete!</b>\\n\\n<b>Topic:</b> ${quiz.topicTitle}\\n<b>Your Score:</b> ${quiz.score}/${totalQuestions} (${percentage}%)\\n\\n${grade}\\n\\n<b>What's next?</b>\\n• Use <code>/quiz</code> to review another topic\\n• Use <code>/learn [URL]</code> to learn something new`;\n  \n  // Clear the active quiz session\n  delete staticData[`quiz_${chatId}`];\n  console.log('✅ Quiz session deleted');\n  \n} else {\n  // More questions remaining\n  nextQuestion = quiz.questions[quiz.currentIndex];\n  const nextQuestionNumber = quiz.currentIndex + 1;\n  \n  console.log('Next question:', nextQuestionNumber, 'of', quiz.questions.length);\n  \n  responseMessage = `${feedback}\\n\\n━━━━━━━━━━━━━━━━━━\\n\\n<b>Question ${nextQuestionNumber}/${quiz.questions.length}:</b>\\n\\n${nextQuestion.question}\\n\\n${nextQuestion.options.join('\\n')}`;\n  \n  hasNextQuestion = true;\n}\n\nreturn [{\n  json: {\n    chatId,\n    messageId,\n    callbackQueryId,\n    message: responseMessage,\n    isDone,\n    hasNextQuestion,\n    nextQuestion,\n    noQuiz: false\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        256
+      ],
+      "id": "e6785832-8b17-47c1-bc04-d6106ff4fe9f",
+      "name": "Process Quiz Answer"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.callbackQueryId }}",
+        "additionalFields": {
+          "text": "Checking..."
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        864,
+        288
+      ],
+      "id": "afda1343-9d23-472e-ba0b-191337fd5d66",
+      "name": "Answer Query a callback",
+      "webhookId": "9bd7d364-093d-4a14-b8dc-9c0e934c0124",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b3e9e000-61fb-41a5-b41e-6d2786644b71",
+              "leftValue": "={{ $json.isDone }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        256
+      ],
+      "id": "88757c9e-6144-4375-bddc-1b4bf003d140",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1456,
+        304
+      ],
+      "id": "63f2edb0-c61b-43aa-bef0-c8cce852e39d",
+      "name": "Handle Quiz Complete",
+      "webhookId": "15c5a60d-b352-4540-9cbc-bfd4da83fab6",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "A",
+                    "additionalFields": {
+                      "callback_data": "A"
+                    }
+                  },
+                  {
+                    "text": "B",
+                    "additionalFields": {
+                      "callback_data": "B"
+                    }
+                  },
+                  {
+                    "text": "C",
+                    "additionalFields": {
+                      "callback_data": "C"
+                    }
+                  },
+                  {
+                    "text": "D",
+                    "additionalFields": {
+                      "callback_data": "D"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1456,
+        464
+      ],
+      "id": "4bd3c561-b4a5-454c-b4b7-e490363b59b2",
+      "name": "Send a text message2",
+      "webhookId": "e0d2bb2c-19ce-44b4-9974-803341f9400e",
+      "credentials": {
+        "telegramApi": {
+          "id": "ye6hmEGmtqaEVQwF",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 982485696,
+          "message": {
+            "message_id": 97,
+            "from": {
+              "id": 634971382,
+              "is_bot": false,
+              "first_name": "Danila",
+              "last_name": "Glazov",
+              "username": "danilaglazov",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 634971382,
+              "first_name": "Danila",
+              "last_name": "Glazov",
+              "username": "danilaglazov",
+              "type": "private"
+            },
+            "date": 1779187150,
+            "text": "/quiz",
+            "entities": [
+              {
+                "offset": 0,
+                "length": 5,
+                "type": "bot_command"
+              }
+            ]
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Modes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commands": {
+      "main": [
+        [
+          {
+            "node": "Welcome MSG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Help MSG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "URL Processor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch Learned Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modes": {
+      "main": [
+        [
+          {
+            "node": "Commands",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Load Selected Topic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Process Quiz Answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Processor": {
+      "main": [
+        [
+          {
+            "node": "Prepare Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Content": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Format Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Summary": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Store Quiz and Topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Summary": {
+      "main": [
+        [
+          {
+            "node": "Send Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Quiz and Topic": {
+      "main": [
+        [
+          {
+            "node": "Error Occurs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Occurs": {
+      "main": [
+        [
+          {
+            "node": "Handle Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Learning Complete Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Learned Topics": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Topic Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Topic Selection": {
+      "main": [
+        [
+          {
+            "node": "Prepare Telegram Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Telegram Payload": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Selected Topic": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Error Handler1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send First Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Callback": {
+      "main": [
+        []
+      ]
+    },
+    "Process Quiz Answer": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Query a callback": {
+      "main": [
+        []
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Handle Quiz Complete",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2abca79a-8608-4922-be6a-da33a805f31b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bc9d62676d41e74ebefc5e8e76b110cf3a486ddb266fc8d9b03d271ffa8884ff"
+  },
+  "id": "cW9OvKiTkXSGPMSQ",
+  "tags": []
+}
